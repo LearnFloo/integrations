@@ -1,0 +1,24 @@
+{
+  "slug": "notion",
+  "name": "Notion",
+  "category": "productivity",
+  "level": "recipe",
+  "events": [
+    "member.joined",
+    "event.registration.created",
+    "live.registration.created"
+  ],
+  "endpoints": [],
+  "summary": {
+    "en": "A Notion database of members and registrations, kept up to date.",
+    "fr": "Une base Notion des membres et des inscriptions, tenue à jour.",
+    "es": "Una base de datos de Notion con los miembros y las inscripciones, siempre al día."
+  },
+  "tools": [
+    "n8n",
+    "make",
+    "zapier",
+    "node"
+  ],
+  "website": "https://www.notion.so"
+}

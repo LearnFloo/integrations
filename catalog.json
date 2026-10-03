@@ -1,0 +1,199 @@
+{
+  "recipes": [
+    {
+      "slug": "brevo",
+      "name": "Brevo",
+      "category": "email",
+      "level": "recipe",
+      "events": [
+        "member.joined",
+        "member.left",
+        "member.removed"
+      ],
+      "endpoints": [],
+      "summary": {
+        "en": "New members are added to a Brevo list, and removed from it when they leave the space.",
+        "fr": "Les nouveaux membres rejoignent une liste Brevo, et la quittent quand ils quittent l’espace.",
+        "es": "Los nuevos miembros entran en una lista de Brevo y salen de ella cuando dejan el espacio."
+      },
+      "tools": [
+        "n8n",
+        "make",
+        "zapier",
+        "node"
+      ],
+      "website": "https://www.brevo.com"
+    },
+    {
+      "slug": "calendly",
+      "name": "Calendly",
+      "category": "scheduling",
+      "level": "recipe",
+      "events": [
+        "live.registration.created"
+      ],
+      "endpoints": [
+        "GET /live/sessions",
+        "GET /live/sessions/:id/invites",
+        "POST /live/sessions/:id/invites"
+      ],
+      "summary": {
+        "en": "Everyone who books a call with you is invited to your next live, with a tracked link.",
+        "fr": "Chaque personne qui réserve un rendez-vous est invitée à votre prochain live, avec un lien suivi.",
+        "es": "Cada persona que reserva una cita contigo recibe una invitación a tu próximo directo, con un enlace rastreado."
+      },
+      "tools": [
+        "n8n",
+        "make",
+        "zapier",
+        "node"
+      ],
+      "website": "https://calendly.com"
+    },
+    {
+      "slug": "discord",
+      "name": "Discord",
+      "category": "communication",
+      "level": "recipe",
+      "events": [
+        "member.joined",
+        "live.session.started",
+        "live.replay.ready",
+        "course.published"
+      ],
+      "endpoints": [],
+      "summary": {
+        "en": "Announce new members, lives going on air, replays and new courses in a Discord channel.",
+        "fr": "Annoncez les nouveaux membres, les lives qui démarrent, les replays et les nouveaux cours dans un salon Discord.",
+        "es": "Anuncia los nuevos miembros, los directos que empiezan, las repeticiones y los nuevos cursos en un canal de Discord."
+      },
+      "tools": [
+        "n8n",
+        "make",
+        "zapier",
+        "node"
+      ],
+      "website": "https://discord.com"
+    },
+    {
+      "slug": "google-sheets",
+      "name": "Google Sheets",
+      "category": "spreadsheet",
+      "level": "recipe",
+      "events": [
+        "member.joined",
+        "live.registration.created",
+        "event.registration.created",
+        "membership.started",
+        "course.completed"
+      ],
+      "endpoints": [],
+      "summary": {
+        "en": "One row per new member, live or event registration, sale or completed course, in a Google Sheet. No middleware.",
+        "fr": "Une ligne par nouveau membre, inscription à un live ou à un événement, vente ou cours terminé, dans un Google Sheets. Sans outil intermédiaire.",
+        "es": "Una fila por nuevo miembro, inscripción a un directo o evento, venta o curso terminado, en Google Sheets. Sin herramienta intermedia."
+      },
+      "tools": [
+        "apps-script",
+        "node"
+      ],
+      "website": "https://workspace.google.com/products/sheets/"
+    },
+    {
+      "slug": "hubspot",
+      "name": "HubSpot",
+      "category": "crm",
+      "level": "recipe",
+      "events": [
+        "member.joined",
+        "membership.started",
+        "membership.cancelled"
+      ],
+      "endpoints": [],
+      "summary": {
+        "en": "Every new member becomes a HubSpot contact tagged with your space; paid memberships update their status.",
+        "fr": "Chaque nouveau membre devient un contact HubSpot avec votre espace ; les adhésions payées mettent son statut à jour.",
+        "es": "Cada nuevo miembro se convierte en un contacto de HubSpot con tu espacio; las membresías de pago actualizan su estado."
+      },
+      "tools": [
+        "n8n",
+        "make",
+        "zapier",
+        "node"
+      ],
+      "website": "https://www.hubspot.com"
+    },
+    {
+      "slug": "mailchimp",
+      "name": "Mailchimp",
+      "category": "email",
+      "level": "recipe",
+      "events": [
+        "member.joined",
+        "membership.started"
+      ],
+      "endpoints": [],
+      "summary": {
+        "en": "New members land in your Mailchimp audience with a tag for your space (and one for paying members).",
+        "fr": "Les nouveaux membres arrivent dans votre audience Mailchimp avec un tag de l’espace (et un pour les membres payants).",
+        "es": "Los nuevos miembros llegan a tu audiencia de Mailchimp con una etiqueta de tu espacio (y otra para los que pagan)."
+      },
+      "tools": [
+        "n8n",
+        "make",
+        "zapier",
+        "node"
+      ],
+      "website": "https://mailchimp.com"
+    },
+    {
+      "slug": "notion",
+      "name": "Notion",
+      "category": "productivity",
+      "level": "recipe",
+      "events": [
+        "member.joined",
+        "event.registration.created",
+        "live.registration.created"
+      ],
+      "endpoints": [],
+      "summary": {
+        "en": "A Notion database of members and registrations, kept up to date.",
+        "fr": "Une base Notion des membres et des inscriptions, tenue à jour.",
+        "es": "Una base de datos de Notion con los miembros y las inscripciones, siempre al día."
+      },
+      "tools": [
+        "n8n",
+        "make",
+        "zapier",
+        "node"
+      ],
+      "website": "https://www.notion.so"
+    },
+    {
+      "slug": "slack",
+      "name": "Slack",
+      "category": "communication",
+      "level": "recipe",
+      "events": [
+        "member.joined",
+        "membership.started",
+        "live.question.created",
+        "support.ticket.created"
+      ],
+      "endpoints": [],
+      "summary": {
+        "en": "A Slack message for each new member, sale, live question or support ticket.",
+        "fr": "Un message Slack pour chaque nouveau membre, vente, question en live ou ticket de support.",
+        "es": "Un mensaje de Slack por cada nuevo miembro, venta, pregunta en directo o ticket de soporte."
+      },
+      "tools": [
+        "n8n",
+        "make",
+        "zapier",
+        "node"
+      ],
+      "website": "https://slack.com"
+    }
+  ]
+}

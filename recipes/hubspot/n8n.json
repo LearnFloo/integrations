@@ -1,0 +1,101 @@
+{
+  "name": "LearnFloo → HubSpot: members as contacts",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "c51095a8-c03c-56c0-90ec-40fd1fd69502",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "511df1e0-6c73-515f-ad92-a333175df311",
+      "name": "LearnFloo webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "webhookId": "94592c38-8ff5-5fe0-93bd-157906fff6d4"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Keeps the events of this recipe, then builds the request(s) for HubSpot.\nconst WANTED = [\"member.joined\", \"membership.started\", \"membership.cancelled\"]\nconst out = []\nfor (const item of $input.all()) {\n  const msg = item.json.body ?? item.json\n  if (WANTED.length && !WANTED.includes(msg.event)) continue\n  const u = msg.data.user ?? {}\n  if (!u.email) continue\n  const [first, ...rest] = (u.name ?? '').trim().split(/\\s+/)\n  const status = msg.event === 'membership.started' ? 'paid' : msg.event === 'membership.cancelled' ? 'ended' : 'free'\n  out.push({ json: { method: 'POST', url: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/upsert', body: { inputs: [{ id: u.email, idProperty: 'email', properties: { email: u.email, firstname: first ?? '', lastname: rest.join(' '), learnfloo_space: msg.space.slug, learnfloo_membership: status } }] } } })\n}\nreturn out\n"
+      },
+      "id": "17731160-1896-5035-b31f-19db732dcab6",
+      "name": "Map to HubSpot",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        240,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "={{ $json.method }}",
+        "url": "={{ $json.url }}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.body) }}",
+        "options": {},
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth"
+      },
+      "id": "c0472192-668c-5813-a314-9f84b5c34d17",
+      "name": "HubSpot",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        480,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "content": "Credential: Header Auth, name Authorization, value \"Bearer <your HubSpot private app token>\" (scope crm.objects.contacts.write).\nCreate two contact properties in HubSpot first: learnfloo_space (single-line text) and learnfloo_membership (single-line text).",
+        "height": 260,
+        "width": 420
+      },
+      "id": "2c566b7e-4d71-579e-9cc3-559047603c5f",
+      "name": "Read me",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        -320
+      ]
+    }
+  ],
+  "connections": {
+    "LearnFloo webhook": {
+      "main": [
+        [
+          {
+            "node": "Map to HubSpot",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Map to HubSpot": {
+      "main": [
+        [
+          {
+            "node": "HubSpot",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": false
+  }
+}

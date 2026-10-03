@@ -1,0 +1,101 @@
+{
+  "name": "Calendly → LearnFloo: invite bookers to the live",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "934c7a44-d5ca-53bd-a649-07b88fbc49de",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "6c9b503c-a770-5308-8bca-5263c645d82a",
+      "name": "Calendly webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "webhookId": "7bf93479-8849-5103-9715-77883d92cb66"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Keeps the events of this recipe, then builds the request(s) for Send the invitation.\nconst WANTED = []\nconst out = []\nfor (const item of $input.all()) {\n  const msg = item.json.body ?? item.json\n  if (WANTED.length && !WANTED.includes(msg.event)) continue\n  // Calendly \"invitee.created\": e-mail the invitee the guest link of your live (create it once in LearnFloo:\n  // the live → Invite → link named \"Calendly\"), tagged with utm_source=calendly.\n  const LIVE_LINK = 'https://app.learnfloo.com/invite/XXXX'\n  const MAILER = 'https://api.resend.com/emails' // any e-mail API; Resend shown here\n  const p = msg.payload ?? {}\n  if (msg.event !== 'invitee.created' || !p.email) continue\n  const link = `${LIVE_LINK}?utm_source=calendly&utm_medium=booking`\n  out.push({ json: { method: 'POST', url: MAILER, body: { from: 'you@yourdomain.com', to: p.email, subject: 'Join my next live', text: `Hi ${p.first_name ?? p.name ?? ''},\\n\\nThanks for booking a call. Before we talk, join my next live: ${link}\\n` } } })\n}\nreturn out\n"
+      },
+      "id": "8bb2f357-fb19-5c19-acdd-217fd67e220f",
+      "name": "Map to Send the invitation",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        240,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "={{ $json.method }}",
+        "url": "={{ $json.url }}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.body) }}",
+        "options": {},
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth"
+      },
+      "id": "20f6dc3b-f891-5793-aa2f-78a0449d6654",
+      "name": "Send the invitation",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        480,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "content": "Calendly sends invitee.created to this webhook (create the subscription with the Calendly API, see README).\nSet LIVE_LINK (the live’s guest link named \"Calendly\") and your e-mail API in \"Map to Send the invitation\".\nThe Node.js version finds the next live and its link by itself through the LearnFloo API.",
+        "height": 260,
+        "width": 420
+      },
+      "id": "55bd5ced-382b-5b8e-9103-8440f1222206",
+      "name": "Read me",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        -320
+      ]
+    }
+  ],
+  "connections": {
+    "Calendly webhook": {
+      "main": [
+        [
+          {
+            "node": "Map to Send the invitation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Map to Send the invitation": {
+      "main": [
+        [
+          {
+            "node": "Send the invitation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": false
+  }
+}

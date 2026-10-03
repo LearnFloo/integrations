@@ -1,0 +1,25 @@
+{
+  "slug": "slack",
+  "name": "Slack",
+  "category": "communication",
+  "level": "recipe",
+  "events": [
+    "member.joined",
+    "membership.started",
+    "live.question.created",
+    "support.ticket.created"
+  ],
+  "endpoints": [],
+  "summary": {
+    "en": "A Slack message for each new member, sale, live question or support ticket.",
+    "fr": "Un message Slack pour chaque nouveau membre, vente, question en live ou ticket de support.",
+    "es": "Un mensaje de Slack por cada nuevo miembro, venta, pregunta en directo o ticket de soporte."
+  },
+  "tools": [
+    "n8n",
+    "make",
+    "zapier",
+    "node"
+  ],
+  "website": "https://slack.com"
+}

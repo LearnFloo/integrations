@@ -1,0 +1,99 @@
+{
+  "name": "LearnFloo → Slack: team alerts",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "d7a47a42-727d-525e-89c4-dd23ef95f8de",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "3b112475-8ea0-503c-b9d8-d368f51b182c",
+      "name": "LearnFloo webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "webhookId": "d5e60919-7ea3-5c66-8fb3-40e9961bca86"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Keeps the events of this recipe, then builds the request(s) for Slack.\nconst WANTED = [\"member.joined\", \"membership.started\", \"live.question.created\", \"support.ticket.created\"]\nconst out = []\nfor (const item of $input.all()) {\n  const msg = item.json.body ?? item.json\n  if (WANTED.length && !WANTED.includes(msg.event)) continue\n  const SLACK_WEBHOOK = 'https://hooks.slack.com/services/XXX/YYY/ZZZ' // Slack incoming webhook\n  const d = msg.data, who = d.user?.name ?? 'Someone'\n  const text = {\n    'member.joined': `:wave: ${who} joined *${msg.space.slug}*`,\n    'membership.started': `:moneybag: ${who} paid ${(d.membership?.amountCents ?? 0) / 100} ${(d.membership?.currency ?? '').toUpperCase()} to join *${msg.space.slug}*`,\n    'live.question.created': `:raising_hand: Question in “${d.session?.title}”: ${d.question?.text}`,\n    'support.ticket.created': `:ticket: Ticket #${d.ticket?.number}: ${d.ticket?.subject}`,\n  }[msg.event]\n  if (text) out.push({ json: { method: 'POST', url: SLACK_WEBHOOK, body: { text } } })\n}\nreturn out\n"
+      },
+      "id": "555fe7e7-3478-50ce-a8fd-bc89ec0f0578",
+      "name": "Map to Slack",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        240,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "={{ $json.method }}",
+        "url": "={{ $json.url }}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.body) }}",
+        "options": {}
+      },
+      "id": "15e28603-85f2-5706-ac41-f087ab9d7d03",
+      "name": "Slack",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        480,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "content": "No credential: paste your Slack incoming webhook URL in SLACK_WEBHOOK (Slack → Apps → Incoming Webhooks).",
+        "height": 260,
+        "width": 420
+      },
+      "id": "364edaaa-3dcf-5929-8ef9-f6e0f7e91fa4",
+      "name": "Read me",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        -320
+      ]
+    }
+  ],
+  "connections": {
+    "LearnFloo webhook": {
+      "main": [
+        [
+          {
+            "node": "Map to Slack",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Map to Slack": {
+      "main": [
+        [
+          {
+            "node": "Slack",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": false
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "slug": "discord",
+  "name": "Discord",
+  "category": "communication",
+  "level": "recipe",
+  "events": [
+    "member.joined",
+    "live.session.started",
+    "live.replay.ready",
+    "course.published"
+  ],
+  "endpoints": [],
+  "summary": {
+    "en": "Announce new members, lives going on air, replays and new courses in a Discord channel.",
+    "fr": "Annoncez les nouveaux membres, les lives qui démarrent, les replays et les nouveaux cours dans un salon Discord.",
+    "es": "Anuncia los nuevos miembros, los directos que empiezan, las repeticiones y los nuevos cursos en un canal de Discord."
+  },
+  "tools": [
+    "n8n",
+    "make",
+    "zapier",
+    "node"
+  ],
+  "website": "https://discord.com"
+}

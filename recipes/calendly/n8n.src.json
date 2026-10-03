@@ -1,0 +1,9 @@
+{
+  "name": "Calendly → LearnFloo: invite bookers to the live",
+  "tool": "Send the invitation",
+  "triggerName": "Calendly webhook",
+  "events": [],
+  "code": "// Calendly \"invitee.created\": e-mail the invitee the guest link of your live (create it once in LearnFloo:\n// the live → Invite → link named \"Calendly\"), tagged with utm_source=calendly.\nconst LIVE_LINK = 'https://app.learnfloo.com/invite/XXXX'\nconst MAILER = 'https://api.resend.com/emails' // any e-mail API; Resend shown here\nconst p = msg.payload ?? {}\nif (msg.event !== 'invitee.created' || !p.email) continue\nconst link = `${LIVE_LINK}?utm_source=calendly&utm_medium=booking`\nout.push({ json: { method: 'POST', url: MAILER, body: { from: 'you@yourdomain.com', to: p.email, subject: 'Join my next live', text: `Hi ${p.first_name ?? p.name ?? ''},\\n\\nThanks for booking a call. Before we talk, join my next live: ${link}\\n` } } })",
+  "auth": "Bearer token of your e-mail API",
+  "note": "Calendly sends invitee.created to this webhook (create the subscription with the Calendly API, see README).\nSet LIVE_LINK (the live’s guest link named \"Calendly\") and your e-mail API in \"Map to Send the invitation\".\nThe Node.js version finds the next live and its link by itself through the LearnFloo API."
+}

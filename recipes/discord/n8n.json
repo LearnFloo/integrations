@@ -1,0 +1,99 @@
+{
+  "name": "LearnFloo → Discord: announcements",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "000dadbd-d4e7-5cbb-87e7-6c3c257d3d87",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "76aa3bc5-fb64-555d-a957-99b6661598d9",
+      "name": "LearnFloo webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "webhookId": "6b69d025-4c62-590d-831d-9b7018e5eed6"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Keeps the events of this recipe, then builds the request(s) for Discord.\nconst WANTED = [\"member.joined\", \"live.session.started\", \"live.replay.ready\", \"course.published\"]\nconst out = []\nfor (const item of $input.all()) {\n  const msg = item.json.body ?? item.json\n  if (WANTED.length && !WANTED.includes(msg.event)) continue\n  const DISCORD_WEBHOOK = 'https://discord.com/api/webhooks/XXX/YYY' // channel webhook\n  const APP = 'https://app.learnfloo.com' // or your space's custom domain\n  const d = msg.data\n  const content = {\n    'member.joined': `👋 Welcome ${d.user?.name ?? ''}!`,\n    'live.session.started': `🔴 **${d.session?.title}** is live now: ${APP}/${msg.space.slug}/live/${d.session?.id}`,\n    'live.replay.ready': `🎬 The replay of **${d.session?.title}** is online: ${APP}/${msg.space.slug}/live/${d.session?.id}`,\n    'course.published': `📚 New course: **${d.course?.title}** ${APP}${d.course?.url ?? ''}`,\n  }[msg.event]\n  if (content) out.push({ json: { method: 'POST', url: DISCORD_WEBHOOK, body: { content } } })\n}\nreturn out\n"
+      },
+      "id": "2f449706-f8f7-5722-8ed9-a7add9ed82b3",
+      "name": "Map to Discord",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        240,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "={{ $json.method }}",
+        "url": "={{ $json.url }}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.body) }}",
+        "options": {}
+      },
+      "id": "8ac1358d-f021-5528-8777-0c5b081bd153",
+      "name": "Discord",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        480,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "content": "No credential: paste your Discord channel webhook URL (channel → Edit → Integrations → Webhooks) in DISCORD_WEBHOOK.",
+        "height": 260,
+        "width": 420
+      },
+      "id": "d268972d-518e-57e0-9b29-93f901be459d",
+      "name": "Read me",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        -320
+      ]
+    }
+  ],
+  "connections": {
+    "LearnFloo webhook": {
+      "main": [
+        [
+          {
+            "node": "Map to Discord",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Map to Discord": {
+      "main": [
+        [
+          {
+            "node": "Discord",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": false
+  }
+}

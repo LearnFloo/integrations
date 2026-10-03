@@ -1,0 +1,23 @@
+{
+  "slug": "mailchimp",
+  "name": "Mailchimp",
+  "category": "email",
+  "level": "recipe",
+  "events": [
+    "member.joined",
+    "membership.started"
+  ],
+  "endpoints": [],
+  "summary": {
+    "en": "New members land in your Mailchimp audience with a tag for your space (and one for paying members).",
+    "fr": "Les nouveaux membres arrivent dans votre audience Mailchimp avec un tag de l’espace (et un pour les membres payants).",
+    "es": "Los nuevos miembros llegan a tu audiencia de Mailchimp con una etiqueta de tu espacio (y otra para los que pagan)."
+  },
+  "tools": [
+    "n8n",
+    "make",
+    "zapier",
+    "node"
+  ],
+  "website": "https://mailchimp.com"
+}

@@ -1,0 +1,24 @@
+{
+  "slug": "brevo",
+  "name": "Brevo",
+  "category": "email",
+  "level": "recipe",
+  "events": [
+    "member.joined",
+    "member.left",
+    "member.removed"
+  ],
+  "endpoints": [],
+  "summary": {
+    "en": "New members are added to a Brevo list, and removed from it when they leave the space.",
+    "fr": "Les nouveaux membres rejoignent une liste Brevo, et la quittent quand ils quittent l’espace.",
+    "es": "Los nuevos miembros entran en una lista de Brevo y salen de ella cuando dejan el espacio."
+  },
+  "tools": [
+    "n8n",
+    "make",
+    "zapier",
+    "node"
+  ],
+  "website": "https://www.brevo.com"
+}

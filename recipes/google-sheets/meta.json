@@ -1,0 +1,24 @@
+{
+  "slug": "google-sheets",
+  "name": "Google Sheets",
+  "category": "spreadsheet",
+  "level": "recipe",
+  "events": [
+    "member.joined",
+    "live.registration.created",
+    "event.registration.created",
+    "membership.started",
+    "course.completed"
+  ],
+  "endpoints": [],
+  "summary": {
+    "en": "One row per new member, live or event registration, sale or completed course, in a Google Sheet. No middleware.",
+    "fr": "Une ligne par nouveau membre, inscription à un live ou à un événement, vente ou cours terminé, dans un Google Sheets. Sans outil intermédiaire.",
+    "es": "Una fila por nuevo miembro, inscripción a un directo o evento, venta o curso terminado, en Google Sheets. Sin herramienta intermedia."
+  },
+  "tools": [
+    "apps-script",
+    "node"
+  ],
+  "website": "https://workspace.google.com/products/sheets/"
+}

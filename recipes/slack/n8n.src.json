@@ -1,0 +1,12 @@
+{
+  "name": "LearnFloo → Slack: team alerts",
+  "tool": "Slack",
+  "events": [
+    "member.joined",
+    "membership.started",
+    "live.question.created",
+    "support.ticket.created"
+  ],
+  "code": "const SLACK_WEBHOOK = 'https://hooks.slack.com/services/XXX/YYY/ZZZ' // Slack incoming webhook\nconst d = msg.data, who = d.user?.name ?? 'Someone'\nconst text = {\n  'member.joined': `:wave: ${who} joined *${msg.space.slug}*`,\n  'membership.started': `:moneybag: ${who} paid ${(d.membership?.amountCents ?? 0) / 100} ${(d.membership?.currency ?? '').toUpperCase()} to join *${msg.space.slug}*`,\n  'live.question.created': `:raising_hand: Question in “${d.session?.title}”: ${d.question?.text}`,\n  'support.ticket.created': `:ticket: Ticket #${d.ticket?.number}: ${d.ticket?.subject}`,\n}[msg.event]\nif (text) out.push({ json: { method: 'POST', url: SLACK_WEBHOOK, body: { text } } })",
+  "note": "No credential: paste your Slack incoming webhook URL in SLACK_WEBHOOK (Slack → Apps → Incoming Webhooks)."
+}

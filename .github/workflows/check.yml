@@ -1,0 +1,22 @@
+name: Check recipes
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: '17 3 * * *'
+  workflow_dispatch:
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Recipes still match the LearnFloo API (test deployment)
+        run: node ci/check.mjs
+        env:
+          LEARNFLOO_API_BASE: ${{ secrets.LEARNFLOO_API_BASE }}
+          LEARNFLOO_API_KEY: ${{ secrets.LEARNFLOO_API_KEY }}
+      - name: n8n workflows are up to date with their sources
+        run: python3 ci/build.py && git diff --exit-code -- recipes

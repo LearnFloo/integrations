@@ -1,0 +1,24 @@
+{
+  "slug": "hubspot",
+  "name": "HubSpot",
+  "category": "crm",
+  "level": "recipe",
+  "events": [
+    "member.joined",
+    "membership.started",
+    "membership.cancelled"
+  ],
+  "endpoints": [],
+  "summary": {
+    "en": "Every new member becomes a HubSpot contact tagged with your space; paid memberships update their status.",
+    "fr": "Chaque nouveau membre devient un contact HubSpot avec votre espace ; les adhésions payées mettent son statut à jour.",
+    "es": "Cada nuevo miembro se convierte en un contacto de HubSpot con tu espacio; las membresías de pago actualizan su estado."
+  },
+  "tools": [
+    "n8n",
+    "make",
+    "zapier",
+    "node"
+  ],
+  "website": "https://www.hubspot.com"
+}

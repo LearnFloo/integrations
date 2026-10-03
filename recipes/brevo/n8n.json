@@ -1,0 +1,101 @@
+{
+  "name": "LearnFloo → Brevo: members in a list",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "a8e65408-4c3b-517a-8c96-3d43e784e089",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "094fb585-4e22-529b-bdfc-f4d75e1675f1",
+      "name": "LearnFloo webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "webhookId": "60beaae2-9368-5676-8b06-9a1fcfef6a6b"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Keeps the events of this recipe, then builds the request(s) for Brevo.\nconst WANTED = [\"member.joined\", \"member.left\", \"member.removed\"]\nconst out = []\nfor (const item of $input.all()) {\n  const msg = item.json.body ?? item.json\n  if (WANTED.length && !WANTED.includes(msg.event)) continue\n  const LIST_ID = 2 // your Brevo list id\n  const u = msg.data.user ?? {}\n  if (!u.email) continue\n  if (msg.event === 'member.joined') {\n    const [first, ...rest] = (u.name ?? '').trim().split(/\\s+/)\n    out.push({ json: { method: 'POST', url: 'https://api.brevo.com/v3/contacts', body: { email: u.email, attributes: { FIRSTNAME: first ?? '', LASTNAME: rest.join(' ') }, listIds: [LIST_ID], updateEnabled: true } } })\n  } else {\n    out.push({ json: { method: 'POST', url: `https://api.brevo.com/v3/contacts/lists/${LIST_ID}/contacts/remove`, body: { emails: [u.email] } } })\n  }\n}\nreturn out\n"
+      },
+      "id": "27b2b352-b14a-54da-90fd-87142b40d7ed",
+      "name": "Map to Brevo",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        240,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "={{ $json.method }}",
+        "url": "={{ $json.url }}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.body) }}",
+        "options": {},
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth"
+      },
+      "id": "2f7b45eb-6df6-5181-8c40-62c220b8f381",
+      "name": "Brevo",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        480,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "content": "Credential: Header Auth, name api-key, value <your Brevo API key>.\nSet LIST_ID in the \"Map to Brevo\" node.",
+        "height": 260,
+        "width": 420
+      },
+      "id": "bd425a82-0929-5b41-8a37-2605ca6f5ddf",
+      "name": "Read me",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        -320
+      ]
+    }
+  ],
+  "connections": {
+    "LearnFloo webhook": {
+      "main": [
+        [
+          {
+            "node": "Map to Brevo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Map to Brevo": {
+      "main": [
+        [
+          {
+            "node": "Brevo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": false
+  }
+}

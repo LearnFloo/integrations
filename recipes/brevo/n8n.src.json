@@ -1,0 +1,12 @@
+{
+  "name": "LearnFloo → Brevo: members in a list",
+  "tool": "Brevo",
+  "auth": "api-key header",
+  "events": [
+    "member.joined",
+    "member.left",
+    "member.removed"
+  ],
+  "code": "const LIST_ID = 2 // your Brevo list id\nconst u = msg.data.user ?? {}\nif (!u.email) continue\nif (msg.event === 'member.joined') {\n  const [first, ...rest] = (u.name ?? '').trim().split(/\\s+/)\n  out.push({ json: { method: 'POST', url: 'https://api.brevo.com/v3/contacts', body: { email: u.email, attributes: { FIRSTNAME: first ?? '', LASTNAME: rest.join(' ') }, listIds: [LIST_ID], updateEnabled: true } } })\n} else {\n  out.push({ json: { method: 'POST', url: `https://api.brevo.com/v3/contacts/lists/${LIST_ID}/contacts/remove`, body: { emails: [u.email] } } })\n}",
+  "note": "Credential: Header Auth, name api-key, value <your Brevo API key>.\nSet LIST_ID in the \"Map to Brevo\" node."
+}

@@ -1,0 +1,11 @@
+{
+  "name": "LearnFloo → Mailchimp: members in an audience",
+  "tool": "Mailchimp",
+  "auth": "Basic auth header",
+  "events": [
+    "member.joined",
+    "membership.started"
+  ],
+  "code": "const DC = 'us21' // the end of your API key, after the dash\nconst LIST = 'abc123' // your audience id\nconst u = msg.data.user ?? {}\nif (!u.email) continue\n// Mailchimp identifies a member by the MD5 of the lowercase e-mail\nconst hash = require('crypto').createHash('md5').update(u.email.toLowerCase()).digest('hex')\nconst base = `https://${DC}.api.mailchimp.com/3.0/lists/${LIST}/members/${hash}`\nconst [first, ...rest] = (u.name ?? '').trim().split(/\\s+/)\n// \"transactional\": in the audience without a marketing subscription (consent is asked by Mailchimp's own forms)\nout.push({ json: { method: 'PUT', url: base, body: { email_address: u.email, status_if_new: 'transactional', merge_fields: { FNAME: first ?? '', LNAME: rest.join(' ') } } } })\nconst tags = [{ name: `learnfloo:${msg.space.slug}`, status: 'active' }]\nif (msg.event === 'membership.started') tags.push({ name: `learnfloo:${msg.space.slug}:paid`, status: 'active' })\nout.push({ json: { method: 'POST', url: `${base}/tags`, body: { tags } } })",
+  "note": "Credential: Header Auth, name Authorization, value \"Basic <base64 of anystring:YOUR_API_KEY>\".\nSet DC and LIST in the \"Map to Mailchimp\" node.\nThe Code node uses require(\"crypto\"): on self-hosted n8n, set NODE_FUNCTION_ALLOW_BUILTIN=crypto."
+}

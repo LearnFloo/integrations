@@ -1,0 +1,26 @@
+{
+  "slug": "calendly",
+  "name": "Calendly",
+  "category": "scheduling",
+  "level": "recipe",
+  "events": [
+    "live.registration.created"
+  ],
+  "endpoints": [
+    "GET /live/sessions",
+    "GET /live/sessions/:id/invites",
+    "POST /live/sessions/:id/invites"
+  ],
+  "summary": {
+    "en": "Everyone who books a call with you is invited to your next live, with a tracked link.",
+    "fr": "Chaque personne qui réserve un rendez-vous est invitée à votre prochain live, avec un lien suivi.",
+    "es": "Cada persona que reserva una cita contigo recibe una invitación a tu próximo directo, con un enlace rastreado."
+  },
+  "tools": [
+    "n8n",
+    "make",
+    "zapier",
+    "node"
+  ],
+  "website": "https://calendly.com"
+}

@@ -1,0 +1,101 @@
+{
+  "name": "LearnFloo → Mailchimp: members in an audience",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "dd533907-5989-547c-b86e-54e3b0444694",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "10db0d9d-5eb1-505b-a3a4-bc4aa975581b",
+      "name": "LearnFloo webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "webhookId": "2ecad1f8-74ff-56c0-936a-e0ba557e9276"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Keeps the events of this recipe, then builds the request(s) for Mailchimp.\nconst WANTED = [\"member.joined\", \"membership.started\"]\nconst out = []\nfor (const item of $input.all()) {\n  const msg = item.json.body ?? item.json\n  if (WANTED.length && !WANTED.includes(msg.event)) continue\n  const DC = 'us21' // the end of your API key, after the dash\n  const LIST = 'abc123' // your audience id\n  const u = msg.data.user ?? {}\n  if (!u.email) continue\n  // Mailchimp identifies a member by the MD5 of the lowercase e-mail\n  const hash = require('crypto').createHash('md5').update(u.email.toLowerCase()).digest('hex')\n  const base = `https://${DC}.api.mailchimp.com/3.0/lists/${LIST}/members/${hash}`\n  const [first, ...rest] = (u.name ?? '').trim().split(/\\s+/)\n  // \"transactional\": in the audience without a marketing subscription (consent is asked by Mailchimp's own forms)\n  out.push({ json: { method: 'PUT', url: base, body: { email_address: u.email, status_if_new: 'transactional', merge_fields: { FNAME: first ?? '', LNAME: rest.join(' ') } } } })\n  const tags = [{ name: `learnfloo:${msg.space.slug}`, status: 'active' }]\n  if (msg.event === 'membership.started') tags.push({ name: `learnfloo:${msg.space.slug}:paid`, status: 'active' })\n  out.push({ json: { method: 'POST', url: `${base}/tags`, body: { tags } } })\n}\nreturn out\n"
+      },
+      "id": "60cf7cfa-8712-554e-a0d0-fa10bb8bb292",
+      "name": "Map to Mailchimp",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        240,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "={{ $json.method }}",
+        "url": "={{ $json.url }}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.body) }}",
+        "options": {},
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth"
+      },
+      "id": "2d886aeb-cfa4-564b-96a9-54360e745047",
+      "name": "Mailchimp",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        480,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "content": "Credential: Header Auth, name Authorization, value \"Basic <base64 of anystring:YOUR_API_KEY>\".\nSet DC and LIST in the \"Map to Mailchimp\" node.\nThe Code node uses require(\"crypto\"): on self-hosted n8n, set NODE_FUNCTION_ALLOW_BUILTIN=crypto.",
+        "height": 260,
+        "width": 420
+      },
+      "id": "5d28be0c-8cf2-5562-9840-034d655bfc9c",
+      "name": "Read me",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        -320
+      ]
+    }
+  ],
+  "connections": {
+    "LearnFloo webhook": {
+      "main": [
+        [
+          {
+            "node": "Map to Mailchimp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Map to Mailchimp": {
+      "main": [
+        [
+          {
+            "node": "Mailchimp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": false
+  }
+}

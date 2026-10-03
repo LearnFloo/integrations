@@ -1,0 +1,12 @@
+{
+  "name": "LearnFloo → HubSpot: members as contacts",
+  "tool": "HubSpot",
+  "auth": "Bearer private app token",
+  "events": [
+    "member.joined",
+    "membership.started",
+    "membership.cancelled"
+  ],
+  "code": "const u = msg.data.user ?? {}\nif (!u.email) continue\nconst [first, ...rest] = (u.name ?? '').trim().split(/\\s+/)\nconst status = msg.event === 'membership.started' ? 'paid' : msg.event === 'membership.cancelled' ? 'ended' : 'free'\nout.push({ json: { method: 'POST', url: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/upsert', body: { inputs: [{ id: u.email, idProperty: 'email', properties: { email: u.email, firstname: first ?? '', lastname: rest.join(' '), learnfloo_space: msg.space.slug, learnfloo_membership: status } }] } } })",
+  "note": "Credential: Header Auth, name Authorization, value \"Bearer <your HubSpot private app token>\" (scope crm.objects.contacts.write).\nCreate two contact properties in HubSpot first: learnfloo_space (single-line text) and learnfloo_membership (single-line text)."
+}

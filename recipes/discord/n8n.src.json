@@ -1,0 +1,12 @@
+{
+  "name": "LearnFloo → Discord: announcements",
+  "tool": "Discord",
+  "events": [
+    "member.joined",
+    "live.session.started",
+    "live.replay.ready",
+    "course.published"
+  ],
+  "code": "const DISCORD_WEBHOOK = 'https://discord.com/api/webhooks/XXX/YYY' // channel webhook\nconst APP = 'https://app.learnfloo.com' // or your space's custom domain\nconst d = msg.data\nconst content = {\n  'member.joined': `👋 Welcome ${d.user?.name ?? ''}!`,\n  'live.session.started': `🔴 **${d.session?.title}** is live now: ${APP}/${msg.space.slug}/live/${d.session?.id}`,\n  'live.replay.ready': `🎬 The replay of **${d.session?.title}** is online: ${APP}/${msg.space.slug}/live/${d.session?.id}`,\n  'course.published': `📚 New course: **${d.course?.title}** ${APP}${d.course?.url ?? ''}`,\n}[msg.event]\nif (content) out.push({ json: { method: 'POST', url: DISCORD_WEBHOOK, body: { content } } })",
+  "note": "No credential: paste your Discord channel webhook URL (channel → Edit → Integrations → Webhooks) in DISCORD_WEBHOOK."
+}
